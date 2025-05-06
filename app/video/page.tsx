@@ -139,11 +139,11 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white px-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-900 dark:to-gray-800 dark:text-white px-4">
       <Toaster position="top-center" reverseOrder={false} />
-      <div className="flex flex-col items-center p-8 bg-gray-900/80 rounded-3xl shadow-2xl">
-        <h2 className="text-3xl font-bold text-indigo-400 mb-6">Student Login</h2>
-        <div className="relative w-80 h-80 rounded-full bg-gray-700 overflow-hidden mb-6">
+      <div className="flex flex-col items-center p-8 bg-gray-200/80 dark:bg-gray-900/80 rounded-3xl shadow-2xl">
+        <h2 className="text-3xl font-bold text-indigo-800 dark:text-indigo-400 mb-6">Student Login</h2>
+        <div className="relative w-80 h-80 rounded-full bg-gray-300 dark:bg-gray-700 overflow-hidden mb-6">
           <video ref={videoRef} className="absolute top-0 left-0 w-full h-full object-cover z-0 rounded-full" />
           <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full pointer-events-none z-10 rounded-full" />
         </div>
