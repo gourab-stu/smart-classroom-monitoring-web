@@ -81,7 +81,7 @@ export default function Home() {
     return () => {
       ws.close();
     };
-  }, []);
+  }, [socket]);
 
   const handleLogin = async () => {
     if (!videoRef.current || !faceBoxRef.current) {
