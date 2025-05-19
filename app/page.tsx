@@ -7,18 +7,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Toaster, toast } from "react-hot-toast";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [showOTPDialog, setShowOTPDialog] = useState(false);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const handleEmailSubmit = async () => {
     if (!email) return toast.error("Please enter your email.");
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/auth/request-otp/", {
+      const res = await fetch(`${API_URL}/auth/request-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -43,7 +46,7 @@ export default function AuthPage() {
     if (!otp) return toast.error("Please enter the OTP.");
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/auth/verify-otp/", {
+      const res = await fetch(`${API_URL}/auth/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp }),
@@ -52,7 +55,7 @@ export default function AuthPage() {
       const data = await res.json();
       if (data.verified) {
         toast.success("Verification successful!");
-        // Redirect or trigger dashboard logic
+        router.push("/student/dashboard");
       } else {
         toast.error("Invalid OTP.");
       }
@@ -71,7 +74,7 @@ export default function AuthPage() {
 
       <Card className="z-10 w-full max-w-md p-6 rounded-2xl bg-white/80 dark:bg-gray-900/90 backdrop-blur-md shadow-xl">
         <CardContent className="space-y-6">
-          <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-100">Sign In / Sign Up</h2>
+          <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-100">Sign In</h2>
 
           <Input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} className="bg-white dark:bg-gray-800" />
 

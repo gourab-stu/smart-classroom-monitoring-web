@@ -8,7 +8,7 @@ const poppins_font = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Smart Classroom",
+  title: "MLeC",
   description: "Sign Up or Sign In to continue to Smart Classroom",
 };
 
