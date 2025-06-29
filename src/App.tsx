@@ -1,11 +1,22 @@
-import Dashboard from "./pages/Dashboard";
+// import Dashboard from "./pages/Dashboard";
+
+// function App() {
+//   return (
+//     <>
+//       <Dashboard />
+//     </>
+//   );
+// }
+
+// export default App;
+
+import Attendence from "./pages/Attendence";
 
 function App() {
   return (
     <>
-      <Dashboard />
+      <Attendence />
     </>
   );
 }
-
 export default App;
