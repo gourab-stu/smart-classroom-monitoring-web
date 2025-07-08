@@ -116,8 +116,16 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground bg-cover bg-center bg-no-repeat;
-    background-image: url("https://res.cloudinary.com/dvkmi9cmw/image/upload/v1748442245/leaves-ground-253-1440x1024-blur_7_tl76za.jpg");
+    @apply bg-background text-foreground bg-cover bg-no-repeat;
     font-family: "Poppins";
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
