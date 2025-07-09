@@ -13,7 +13,8 @@ export function useRequestOtp() {
       console.log("OTP Response:", response.data);
       return true;
     } catch (error) {
-      toast.error("Failed to send OTP. Please try again.");
+      if (error?.status === 404) toast.error(error?.response?.data?.detail);
+      else toast.error("Failed to send OTP. Please try again.");
       console.error("OTP Request Error:", error);
       return false;
     } finally {

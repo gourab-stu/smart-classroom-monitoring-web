@@ -23,10 +23,12 @@ export function useOtp(email: string) {
     try {
       const res = await api.post("/auth/request-otp", { email });
       toast.success("OTP sent successfully");
+      console.log(res);
       setTimeLeft(300); // reset timer
       return true;
     } catch (err) {
       toast.error("Failed to send OTP");
+      console.error(err);
       return false;
     } finally {
       setLoading(false);
@@ -54,6 +56,7 @@ export function useOtp(email: string) {
       }
     } catch (err) {
       toast.error("OTP verification failed");
+      console.error(err);
     } finally {
       setVerifying(false);
     }

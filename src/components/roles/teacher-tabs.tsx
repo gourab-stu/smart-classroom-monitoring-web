@@ -2,16 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useProfile } from "@/hooks/useProfile";
 import { SkeletonCard } from "../skeleton-card";
 import { useAssignments } from "@/hooks/useAssignment";
-import {
-  Book,
-  CalendarClock,
-  ClipboardList,
-  Eye,
-  Loader2,
-  Plus,
-  User,
-  Video,
-} from "lucide-react";
+import { Book, Eye, Loader2, Plus, User } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -28,7 +19,6 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { useUploadAttachment } from "@/hooks/useUploadAttachment";
 import { toast } from "sonner";
-import { useRoutines } from "@/hooks/useRoutine";
 import {
   Table,
   TableBody,
@@ -38,21 +28,23 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import { useAllSubmissions } from "@/hooks/useAllSubmissions";
+import { useRoutines } from "@/hooks/useRoutine";
 
 export const icons = {
   Profile: <User size={16} />,
   Assignment: <Book size={16} />,
-  Attendance: <ClipboardList size={16} />,
-  Routine: <CalendarClock size={16} />,
-  "Join Class": <Video size={16} />,
+  // Attendance: <ClipboardList size={16} />,
+  // Routine: <CalendarClock size={16} />,
+  // "Join Class": <Video size={16} />,
 };
 
 export const tabs = [
   { label: "Profile", value: "Profile" },
   { label: "Assignment", value: "Assignment" },
-  { label: "Attendance", value: "Attendance" },
-  { label: "Routine", value: "Routine" },
-  { label: "Join Class", value: "Join Class" },
+  // { label: "Attendance", value: "Attendance" },
+  // { label: "Routine", value: "Routine" },
+  // { label: "Join Class", value: "Join Class" },
 ];
 
 export const ProfileTab = () => {
@@ -79,7 +71,7 @@ export const ProfileTab = () => {
           <h2 className="text-xl font-bold">👤 Basic Info</h2>
           <ul className="mt-2 space-y-1 text-sm">
             <li>
-              <strong>Name:</strong>
+              <strong>Name:</strong> Prof.
               {` ${profile.first_name}${
                 profile.middle_name ? " " + profile.middle_name : ""
               } ${profile.last_name}`}
@@ -89,26 +81,6 @@ export const ProfileTab = () => {
             </li>
             <li>
               <strong>Mobile No:</strong> {profile.mobile_no}
-            </li>
-          </ul>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent className="p-4">
-          <h2 className="text-xl font-bold">📍 Academic Info</h2>
-          <ul className="mt-2 space-y-1 text-sm">
-            <li>
-              <strong>Core Papers:</strong>{" "}
-              {profile.papers
-                ?.sort()
-                ?.map((val: string, i: number) =>
-                  profile.papers && i < profile.papers?.length - 1
-                    ? `${val}, `
-                    : `${val}`
-                )}
-            </li>
-            <li>
-              <strong>Semester:</strong> {profile.semester}
             </li>
           </ul>
         </CardContent>
@@ -123,27 +95,8 @@ export const AssignmentTab = () => {
 
   const { assignment, loading: assignmentLoading } =
     useAssignmentDetails(selectedId);
-  const { paper } = usePaper(assignment?.paper_code || null);
-  const { profile: teacher } = useUserProfile(assignment?.teacher_id || null);
-  const { attachments } = useSubmissionAttachments(
-    assignment?.assignment_id || null
-  );
-
-  const { upload, uploading } = useUploadAttachment();
-
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !assignment?.assignment_id) return;
-
-    try {
-      await upload(assignment.assignment_id, file, (progress) => {
-        toast.message(`Uploading: ${progress}%`);
-      });
-    } catch (err) {
-      toast.error("Can not upload attachment");
-      console.error(err);
-    }
-  };
+  const { submissions, loading: submissionsLoading } =
+    useAllSubmissions(selectedId);
 
   if (loading) {
     return (
@@ -194,67 +147,67 @@ export const AssignmentTab = () => {
                     ) : (
                       <Eye />
                     )}
-                    {assignmentLoading ? "Loading..." : "View"}
+                    {assignmentLoading
+                      ? "Loading... submissions"
+                      : "View submissions"}
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-xl">
+                <DialogContent className="w-full min-w-6xl min-h-6xl overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>{assignment?.title}</DialogTitle>
                   </DialogHeader>
                   <DialogDescription className="space-y-2 text-sm text-left">
-                    <p>
-                      <strong>📘 Paper:</strong>{" "}
-                      {paper?.paper_title || assignment?.paper_code}
-                    </p>
-                    <p>
-                      <strong>👨‍🏫 Teacher:</strong> {teacher?.first_name}{" "}
-                      {teacher?.middle_name} {teacher?.last_name}
-                    </p>
-                    <p>
-                      <strong>📂 Type:</strong> {assignment?.assignment_type}
-                    </p>
-                    <p>
-                      <strong>📝 Instructions:</strong>{" "}
-                      {assignment?.instructions || "N/A"}
-                    </p>
-
-                    <div>
-                      <strong>📎 Your Submissions:</strong>
-                      {attachments.length === 0 ? (
-                        <p className="text-sm py-3 text-zinc-400 italic">
-                          No attachments submitted.
-                        </p>
-                      ) : (
-                        <ul className="list-disc list-inside text-sm">
-                          {attachments.flatMap((sub) =>
-                            sub.attachments.map((att: any, idx: number) => (
-                              <li key={idx}>
-                                <a
-                                  href={att.file_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-blue-500 underline"
-                                >
-                                  {att.original_filename}
-                                </a>
-                              </li>
-                            ))
-                          )}
-                        </ul>
-                      )}
-                    </div>
-
-                    <label className="mt-4 w-full flex items-center justify-center gap-2 bg-teal-700 text-white px-4 py-2 rounded-md text-sm hover:bg-teal-800 transition cursor-pointer">
-                      <Plus className="w-4 h-4" />
-                      {uploading ? "Uploading..." : "Upload Submission"}
-                      <input
-                        type="file"
-                        accept="*/*"
-                        className="hidden"
-                        onChange={handleUpload}
-                        disabled={uploading}
-                      />
-                    </label>
+                    <Table>
+                      <TableCaption>All submissions</TableCaption>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Student Name</TableHead>
+                          <TableHead>Files</TableHead>
+                          <TableHead>Submitted At</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {submissionsLoading ? (
+                          <TableRow>
+                            <TableCell colSpan={3} className="text-center">
+                              <Loader2 className="animate-spin mx-auto" />
+                            </TableCell>
+                          </TableRow>
+                        ) : submissions.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={3} className="text-center">
+                              No submissions found.
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          submissions.map((sub) => (
+                            <TableRow key={sub.submission_id}>
+                              <TableCell>{sub.student_name}</TableCell>
+                              <TableCell>
+                                <ul className="list-disc ml-4">
+                                  {sub.attachments.map((att, i) => (
+                                    <li key={i}>
+                                      <a
+                                        href={att.file_url}
+                                        target="_blank"
+                                        className="text-blue-500 underline"
+                                      >
+                                        {att.original_filename}
+                                      </a>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </TableCell>
+                              <TableCell>
+                                {new Date(sub.submitted_at).toLocaleString(
+                                  "en-GB"
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
                   </DialogDescription>
                 </DialogContent>
               </Dialog>
@@ -346,17 +299,3 @@ export const RoutineTab = () => {
     </div>
   );
 };
-
-export const JoinClassTab = () => (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <Card>
-      <CardContent className="p-4">
-        <h2 className="font-semibold">💻 Google Meet Link</h2>
-        <p>Click below to join your class:</p>
-        <button className="mt-4 w-full bg-green-600 text-white px-4 py-2 rounded-md">
-          Join Class
-        </button>
-      </CardContent>
-    </Card>
-  </div>
-);

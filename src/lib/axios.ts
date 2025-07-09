@@ -26,8 +26,12 @@ api.interceptors.response.use(
   (res) => res,
   async (err) => {
     const originalRequest = err.config;
+    console.log(err);
 
-    if (err.response?.status === 401 && !originalRequest._retry) {
+    if (
+      err.response?.data?.detail.toLowerCase() === "signature has expired" &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
 
       if (isRefreshing) {
@@ -50,7 +54,7 @@ api.interceptors.response.use(
           return api(originalRequest);
         }
       } catch (refreshErr) {
-        useAuthStore.getState().clearAccessToken();
+        useAuthStore.getState().clearAuth();
         failedQueue = [];
         return Promise.reject(refreshErr);
       } finally {

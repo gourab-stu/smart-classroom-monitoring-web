@@ -3,7 +3,7 @@ import {
   AssignmentTab,
   AttendanceTab,
   JoinClassTab,
-  ProfileTab,
+  ProfileTab as StudentProfileTab,
   RoutineTab,
 } from "@/components/roles/student-tabs";
 import {
@@ -14,8 +14,10 @@ import {
 import { useState } from "react";
 import { SidebarLayout } from "@/components/layouts/sidebar-layout";
 import { Separator } from "@/components/ui/separator";
-// import { SidebarLayout } from "@/components/layouts/sidebar-layout";
-// import { TeacherTabs } from "@/components/roles/teacher-tabs";
+import {
+  ProfileTab as TeacherProfileTab,
+  AssignmentTab as TeacherAssignmentTab,
+} from "@/components/roles/teacher-tabs";
 // import { AdminTabs } from "@/components/roles/admin-tabs";
 // import { SuperAdminTabs } from "@/components/roles/super-admin-tabs";
 
@@ -26,7 +28,7 @@ export const Dashboard = () => {
   return (
     <>
       <SidebarProvider>
-        {userRole === "student" && <SidebarLayout onTabChange={setActiveTab} />}
+        <SidebarLayout onTabChange={setActiveTab} />
         <SidebarInset className="flex h-screen w-screen overflow-hidden bg-gradient-to-br from-teal-600 to-cyan-950 text-white">
           <header className="text-2xl font-bold p-5 text-white grid grid-cols-10">
             <SidebarTrigger />
@@ -34,11 +36,27 @@ export const Dashboard = () => {
           </header>
           <Separator />
           <div className="p-8">
-            {activeTab === "Profile" && <ProfileTab />}
-            {activeTab === "Assignment" && <AssignmentTab />}
-            {activeTab === "Attendance" && <AttendanceTab />}
-            {activeTab === "Routine" && <RoutineTab />}
-            {activeTab === "Join Class" && <JoinClassTab />}
+            {userRole === "student" && activeTab === "Profile" && (
+              <StudentProfileTab />
+            )}
+            {userRole === "student" && activeTab === "Assignment" && (
+              <AssignmentTab />
+            )}
+            {userRole === "student" && activeTab === "Attendance" && (
+              <AttendanceTab />
+            )}
+            {userRole === "student" && activeTab === "Routine" && (
+              <RoutineTab />
+            )}
+            {userRole === "student" && activeTab === "Join Class" && (
+              <JoinClassTab />
+            )}
+            {userRole === "teacher" && activeTab === "Profile" && (
+              <TeacherProfileTab />
+            )}
+            {userRole === "teacher" && activeTab === "Assignment" && (
+              <TeacherAssignmentTab />
+            )}
             {/* {userRole === "teacher" && <TeacherTabs />}
           {userRole === "admin" && <AdminTabs />}
           {userRole === "super-admin" && <SuperAdminTabs />} */}
